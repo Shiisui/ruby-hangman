@@ -40,5 +40,3 @@ steps
     if the player guess all letters of the secret word he wins and the program stops
 
 end
-
-
