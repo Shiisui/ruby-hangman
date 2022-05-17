@@ -1,0 +1,34 @@
+goals 
+
+    game class, players class, human class, computer class
+    players will give input to the game:
+    human sends his number of guesses/guesses left (3 lives base)
+    and his input of one guess (letter)
+    computer sends his secret word 
+    they are then compared and is decided whether the human loses 1 guess
+    or wins one guess, his instance variable can be changed
+    and is displayed the result of the inputs
+    repeat <=
+
+input 
+
+    secret word, 3 lives, guess, players
+
+output 
+
+    an array of underscores.length of secret word
+    either shows guessed if any letters, 
+    show player left guesses -1 at each false guess
+    at 0 game ends
+    if player guess all letters and has more than 0 lives he wins
+    and game ends
+
+steps 
+
+    create classes 
+    link classes
+    create instance variables, (class variables?)
+    create methods 
+
+end
+

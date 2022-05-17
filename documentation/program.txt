@@ -1,0 +1,44 @@
+goal of the game 
+
+    play hangman vs the computer
+    the computer choose a word from dictionary
+    the human guesses with one letter each turn
+    the secret word and human letter guess 
+    are compared every turn and an output is displayed
+
+input
+
+    one char to the command line
+
+output 
+
+    display the number of guess left
+    display the underscore array 
+    display in that array letters guessed by the user if any
+    the user guess one letter but that letter can occur 
+    multiple times within the secret word
+    therefore all of the occurrencies will be shown.
+
+steps 
+
+    link the words files as dictionary
+
+    able to pick randomly a word between 5 and 12 chars from the file and store it
+
+    ask for input from the user and store it 
+
+    create a display array of underscores the length of the secret word
+
+    compare input and the secret code, find occurencies of the letter
+    typed by the user in the word array of chars ['w','o','r','d']
+    if user type w the program should be able to look through the hole array at once 
+    and give back the index of each occurence in the array of the secret word.
+
+    the player have 3 lives, a life is lost when the user fail to guess a letter.
+    after 3 fails the user loses and the program stops.
+
+    if the player guess all letters of the secret word he wins and the program stops
+
+end
+
+
