@@ -17,6 +17,7 @@ module Hangman
         def initialize(human, secret_word)
             @player = [human.new(self)]
             @secret_word = secret_word
+            @save = nil
         end
         
         def play
@@ -27,6 +28,9 @@ module Hangman
                     return
                 elsif human_has_lost?(@@lives)
                     puts "Game Over"
+                    return
+                elsif @save != nil
+                    puts "Game Saved"
                     return
                 elsif guess_false_or_true(@secret_word[0], human_guess, game_board)
                     print "lives left: " + @@lives.to_s
@@ -48,8 +52,9 @@ module Hangman
         end
 
        def guess_false_or_true(secret_word, guess, game_board)
-            
+        return if guess == nil
             if secret_word.include?(guess)
+                
                 update_board(secret_word, guess, game_board)
             elsif @@lives != 0 
                 if !($incorrect_guess.include?(guess))    
@@ -64,7 +69,8 @@ module Hangman
        end
 
         def human_guess 
-            return @player[0].guess_letter
+            
+            return @player[0].guess_letter 
         end
         
         def update_board(secret_word, guess, game_board)
@@ -78,9 +84,8 @@ module Hangman
                 end
             end
             updated_board = game_board
-            print updated_board.join(" ") + "  "
+            print "\n" + updated_board.join(" ") + "  "
             return true
-            
         end
 
         def get_game_board
@@ -96,6 +101,7 @@ module Hangman
         end
 
         def check_input(input)
+            return false if input == nil
             if input.match?(/[a-z]/)
                 return true 
             end
@@ -103,6 +109,14 @@ module Hangman
             return false
         end
 
+        def save_the_game(confirm)
+            yes = confirm
+            game_saved?(yes)
+        end
+
+        def game_saved?(yes)
+            @save = yes
+        end
         
    end
 
@@ -113,24 +127,30 @@ module Hangman
    end
 
    class Human < Player
-        
         def guess_letter
             loop do    
-                print "\n\nEnter a letter: "
-                guess = gets.chomp.downcase[0] 
+                print "\n\nEnter a letter or Enter 'save' to quit: "
+                guess = gets.chomp.downcase 
 
                 next if guess == nil
-            
+                
+                if guess == "save"
+                    @game.save_the_game(guess)
+                    return nil
+                end
+                
+                guess = guess[0]
                 return guess if @game.check_input(guess)
-
             end
         end
-    
    end
-
-
 end
 
 include Hangman
 secret_word = secret_words_dictionary.sample(1)
-Game.new(Human, secret_word).play
+
+game = Game.new(Human, secret_word).play
+
+# seriliaze here after game ends
+
+
