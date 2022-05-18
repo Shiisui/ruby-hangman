@@ -165,7 +165,17 @@ if defined?(game) == nil
 
     game = Game.new(Human, secret_word).play
 end
-# seriliaze here after game ends and if save
+# seriliaze here after if save
 
 
-# if game.save 
+
+ if game.save 
+ 
+    Dir.mkdir("saved_games") unless Dir.exist?("saved_games")
+
+    filename = "saved_games/game_save.rb"
+
+    File.open(filename, "w") do |file|
+        file.puts "script.rb"
+    end
+end
