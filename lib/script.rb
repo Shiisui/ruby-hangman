@@ -22,9 +22,6 @@ module Hangman
         def play
             game_board = get_game_board
             loop do 
-
-               
-                
                 if human_has_won?(@secret_word[0], game_board)
                     puts "You won"
                     return
@@ -98,6 +95,14 @@ module Hangman
             return array_underscores
         end
 
+        def check_input(input)
+            if input.match?(/[a-z]/)
+                return true 
+            end
+            puts "Error, we only accept Letters"
+            return false
+        end
+
         
    end
 
@@ -110,10 +115,15 @@ module Hangman
    class Human < Player
         
         def guess_letter
+            loop do    
+                print "\n\nEnter a letter: "
+                guess = gets.chomp.downcase[0] 
+
+                next if guess == nil
             
-            print "\n\nEnter a letter: "
-            guess = gets.chomp.downcase[0]
-            return guess
+                return guess if @game.check_input(guess)
+
+            end
         end
     
    end
