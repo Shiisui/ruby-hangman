@@ -11,9 +11,9 @@ lines.each do |word|
 end
 
 module Hangman
-    $letters_entered = []
+    $incorrect_guess = []
     class Game
-        @@lives = 3
+        @@lives = 8
         def initialize(human, secret_word)
             @player = [human.new(self)]
             @secret_word = secret_word
@@ -23,25 +23,46 @@ module Hangman
             game_board = get_game_board
             loop do 
 
-                guess_false_or_true(@secret_word[0], human_guess, game_board)
+               
                 
-                # if human_has_won?(@secret_word)
-                #     print_win
-                #     return
-                # elsif human_has_lost?
-                #     print_lose
-                #     return
-                # elsif guess_false_or_true(@secret_word, human_guess)
-                #     print_guesses_left
-                #     return
-                # end
+                if human_has_won?(@secret_word[0], game_board)
+                    puts "You won"
+                    return
+                elsif human_has_lost?(@@lives)
+                    puts "Game Over"
+                    return
+                elsif guess_false_or_true(@secret_word[0], human_guess, game_board)
+                    print "lives left: " + @@lives.to_s
+                    puts "    Incorrect guesses: " + $incorrect_guess.join(", ")
+                end
             end
         end
         
+        def human_has_lost?(lives)
+            if lives < 1
+                return true
+            end
+        end
+
+        def human_has_won?(secret_word, game_board)
+            if secret_word[0..-2] == game_board.join
+                return true
+            end
+        end
+
        def guess_false_or_true(secret_word, guess, game_board)
             
             if secret_word.include?(guess)
                 update_board(secret_word, guess, game_board)
+            elsif @@lives != 0 
+                if !($incorrect_guess.include?(guess))    
+                    $incorrect_guess << guess
+                    @@lives -= 1
+                else 
+                    print "Error, #{$incorrect_guess.join} is already incorrect. Enter a new letter"
+                end
+            else 
+                $incorrect_guess << guess
             end
        end
 
@@ -60,8 +81,9 @@ module Hangman
                 end
             end
             updated_board = game_board
-            p updated_board.join(" ")
-            puts @@lives
+            print updated_board.join(" ") + "  "
+            return true
+            
         end
 
         def get_game_board
