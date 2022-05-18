@@ -119,7 +119,8 @@ module Hangman
             @save = yes
         end
 
-        def save
+        def save?
+             
             if @save == "save"
                 return true
             else
@@ -163,19 +164,19 @@ include Hangman
 if defined?(game) == nil
     secret_word = secret_words_dictionary.sample(1)
 
-    game = Game.new(Human, secret_word).play
+    game = Game.new(Human, secret_word)
+    game.play
+    
 end
 # seriliaze here after if save
 
-
-
- if game.save 
+ if game.save? 
  
     Dir.mkdir("saved_games") unless Dir.exist?("saved_games")
 
     filename = "saved_games/game_save.rb"
 
     File.open(filename, "w") do |file|
-        file.puts "script.rb"
+        file.puts "lib/script.rb"
     end
 end
