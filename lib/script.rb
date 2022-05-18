@@ -12,6 +12,7 @@ end
 
 module Hangman
     $incorrect_guess = []
+    
     class Game
         @@lives = 8
         def initialize(human, secret_word)
@@ -19,7 +20,7 @@ module Hangman
             @secret_word = secret_word
             @save = nil
         end
-        
+
         def play
             game_board = get_game_board
             loop do 
@@ -117,6 +118,15 @@ module Hangman
         def game_saved?(yes)
             @save = yes
         end
+
+        def save
+            if @save == "save"
+                return true
+            else
+                return false
+            end
+        end
+       
         
    end
 
@@ -125,6 +135,8 @@ module Hangman
             @game = game
        end
    end
+
+  
 
    class Human < Player
         def guess_letter
@@ -147,10 +159,13 @@ module Hangman
 end
 
 include Hangman
-secret_word = secret_words_dictionary.sample(1)
 
-game = Game.new(Human, secret_word).play
+if defined?(game) == nil
+    secret_word = secret_words_dictionary.sample(1)
 
-# seriliaze here after game ends
+    game = Game.new(Human, secret_word).play
+end
+# seriliaze here after game ends and if save
 
 
+# if game.save 
