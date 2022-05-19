@@ -1,0 +1,9 @@
+--- &1 !ruby/object:Hangman::Game
+player:
+- !ruby/object:Hangman::Human
+  game: *1
+secret_word:
+- 'jeremy
+
+  '
+save: save

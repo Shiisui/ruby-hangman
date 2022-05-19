@@ -33,7 +33,7 @@ module Hangman
                     return
                 elsif @save != nil
                     puts "Game Saved"
-                   
+                    serialize()
                     return
                 elsif guess_false_or_true(@secret_word[0], human_guess, game_board)
                     print "lives left: " + @@lives.to_s
@@ -130,14 +130,26 @@ module Hangman
         end
 
 
-        def self.deserialize(yaml_string)
-            YAML::load(yaml_string)
+        def serialize
+            yaml = YAML::dump(self)
+            Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
+
+            game_file = "saved_games/saved.yaml"
+
+            File.open(game_file, "w") do |file|
+                file.puts yaml
+            end
+        end
+
+        def deserialize
+            game_file = "saved_games/saved.yaml"
+            
+            yaml = game_file.read
+
+            YAML::load(yaml)
         end
           
          
-        def serialize
-            YAML::dump(self)
-        end
         
    end
 
@@ -180,10 +192,8 @@ if defined?($game) == nil
     
     $game.play
     
-    if $game.save?
-        yaml = $game.serialize
-        p yaml
-    end
+   
 end
-# seriliaze here after if save
+puts "load game?"
+loading = gets.chomp
 
