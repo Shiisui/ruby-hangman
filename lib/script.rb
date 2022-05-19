@@ -107,7 +107,7 @@ module Hangman
         end
 
         def get_game_board
-            puts @secret_word[0]
+            
             array_underscores = []
             chars_word = @secret_word[0].split("")[0..-2]
             
@@ -181,7 +181,7 @@ if defined?($game) == nil
 
     $game = Game.new(Human, secret_word)
     
-    print "Load a saved game? Enter 'load': "
+    print "Want to load a saved game? Enter 'load': "
     do_load = gets.chomp
    
     if Dir.exist?('saved_games') && do_load == "load"

@@ -3,22 +3,16 @@ player:
 - !ruby/object:Hangman::Human
   game: *1
 secret_word:
-- 'fired
+- 'funded
 
   '
 save:
-incorrect_guess:
-- z
-- y
-- x
-- p
-- u
-- t
-- g
-lives: 1
+incorrect_guess: []
+lives: 8
 game_board:
-- f
-- i
-- r
 - _
-- d
+- _
+- _
+- _
+- _
+- _
