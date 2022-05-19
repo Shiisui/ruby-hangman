@@ -1,5 +1,4 @@
 require 'yaml'
-require 'pry-byebug'
 puts "Game initialized\n\n\n"
 
 lines = File.readlines("google-10000-english-no-swears.txt")
@@ -14,7 +13,6 @@ end
 
 module Hangman
    
-    
     class Game
         
         def initialize(human, secret_word)
@@ -144,8 +142,6 @@ module Hangman
             end
         end
         
-         
-        
    end
 
    class Player
@@ -196,5 +192,4 @@ if defined?($game) == nil
     end
 
     $game.play
-  
 end
