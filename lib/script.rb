@@ -1,4 +1,5 @@
 require 'yaml'
+require 'pry-byebug'
 puts "Game initialized\n\n\n"
 
 lines = File.readlines("google-10000-english-no-swears.txt")
@@ -12,32 +13,48 @@ lines.each do |word|
 end
 
 module Hangman
-    $incorrect_guess = []
+   
     
     class Game
-        @@lives = 8
+        
         def initialize(human, secret_word)
             @player = [human.new(self)]
             @secret_word = secret_word
             @save = nil
+            
         end
-
+        attr_accessor :game_board, :lives, :incorrect_guess
+        attr_reader :save
+        
         def play
-            game_board = get_game_board
+            
+            if @game_board == nil
+                @incorrect_guess = []
+                @lives = 8
+                @game_board = get_game_board 
+            else
+                print @game_board.join(" ") + "  " 
+                print "lives left: " + @lives.to_s + "   "
+                puts "Incorrect guesses: " + @incorrect_guess.join(", ")
+            end
+            
             loop do 
-                if human_has_won?(@secret_word[0], game_board)
+                if human_has_won?(@secret_word[0], @game_board)
                     puts "You won"
                     return
-                elsif human_has_lost?(@@lives)
+                elsif human_has_lost?(@lives)
                     puts "Game Over"
                     return
-                elsif @save != nil
+                elsif @save == "yes"
+                     
                     puts "Game Saved"
+                    @save = nil
                     serialize()
                     return
-                elsif guess_false_or_true(@secret_word[0], human_guess, game_board)
-                    print "lives left: " + @@lives.to_s
-                    puts "    Incorrect guesses: " + $incorrect_guess.join(", ")
+                   
+                elsif guess_false_or_true(@secret_word[0], human_guess, game_board) 
+                    print "lives left: " + @lives.to_s
+                    puts "    Incorrect guesses: " + @incorrect_guess.join(", ")
                 end
             end
         end
@@ -59,15 +76,15 @@ module Hangman
             if secret_word.include?(guess)
                 
                 update_board(secret_word, guess, game_board)
-            elsif @@lives != 0 
-                if !($incorrect_guess.include?(guess))    
-                    $incorrect_guess << guess
-                    @@lives -= 1
+            elsif @lives != 0 
+                if !(@incorrect_guess.include?(guess))    
+                    @incorrect_guess << guess
+                    @lives -= 1
                 else 
-                    print "Error, #{$incorrect_guess.join} is already incorrect. Enter a new letter"
+                    print "Error, #{@incorrect_guess.join} is already incorrect. Enter a new letter"
                 end
             else 
-                $incorrect_guess << guess
+                @incorrect_guess << guess
             end
        end
 
@@ -112,25 +129,11 @@ module Hangman
             return false
         end
 
-        def save_the_game(confirm)
-            yes = confirm
-            game_saved?(yes)
+        def save_game 
+            @save = "yes"
         end
 
-        def game_saved?(yes)
-            @save = yes
-        end
-
-        def save?
-            if @save == "save"
-                return true
-            else
-                return false
-            end
-        end
-
-
-        def serialize
+        def serialize 
             yaml = YAML::dump(self)
             Dir.mkdir('saved_games') unless Dir.exist?('saved_games')
 
@@ -140,15 +143,7 @@ module Hangman
                 file.puts yaml
             end
         end
-
-        def deserialize
-            game_file = "saved_games/saved.yaml"
-            
-            yaml = game_file.read
-
-            YAML::load(yaml)
-        end
-          
+        
          
         
    end
@@ -159,21 +154,20 @@ module Hangman
        end
    end
 
-  
 
    class Human < Player
         def guess_letter
             loop do    
+                
                 print "\n\nEnter a letter or Enter 'save' to quit: "
                 guess = gets.chomp.downcase 
 
                 next if guess == nil
                 
-                if guess == "save"
-                    @game.save_the_game(guess)
+                if guess == "save" 
+                    @game.save_game
                     return nil
                 end
-                
                 guess = guess[0]
                 return guess if @game.check_input(guess)
             end
@@ -186,14 +180,21 @@ end
 include Hangman
 
 if defined?($game) == nil
+    
     secret_word = secret_words_dictionary.sample(1)
 
     $game = Game.new(Human, secret_word)
     
-    $game.play
-    
+    print "Load a saved game? Enter 'load': "
+    do_load = gets.chomp
    
-end
-puts "load game?"
-loading = gets.chomp
+    if Dir.exist?('saved_games') && do_load == "load"
+        game_file = File.new("saved_games/saved.yaml")
+        yaml = game_file.read
+        $game = YAML::load(yaml)
+        puts "\n"
+    end
 
+    $game.play
+  
+end
