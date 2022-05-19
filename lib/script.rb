@@ -1,3 +1,4 @@
+require 'yaml'
 puts "Game initialized\n\n\n"
 
 lines = File.readlines("google-10000-english-no-swears.txt")
@@ -32,6 +33,7 @@ module Hangman
                     return
                 elsif @save != nil
                     puts "Game Saved"
+                   
                     return
                 elsif guess_false_or_true(@secret_word[0], human_guess, game_board)
                     print "lives left: " + @@lives.to_s
@@ -120,14 +122,22 @@ module Hangman
         end
 
         def save?
-             
             if @save == "save"
                 return true
             else
                 return false
             end
         end
-       
+
+
+        def self.deserialize(yaml_string)
+            YAML::load(yaml_string)
+        end
+          
+         
+        def serialize
+            YAML::dump(self)
+        end
         
    end
 
@@ -157,26 +167,23 @@ module Hangman
             end
         end
    end
+
+   
 end
 
 include Hangman
 
-if defined?(game) == nil
+if defined?($game) == nil
     secret_word = secret_words_dictionary.sample(1)
 
-    game = Game.new(Human, secret_word)
-    game.play
+    $game = Game.new(Human, secret_word)
     
+    $game.play
+    
+    if $game.save?
+        yaml = $game.serialize
+        p yaml
+    end
 end
 # seriliaze here after if save
 
- if game.save? 
- 
-    Dir.mkdir("saved_games") unless Dir.exist?("saved_games")
-
-    filename = "saved_games/game_save.rb"
-
-    File.open(filename, "w") do |file|
-        file.puts "lib/script.rb"
-    end
-end
